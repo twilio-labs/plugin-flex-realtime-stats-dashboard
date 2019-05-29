@@ -8,24 +8,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
+
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
+
 import Typography from "@material-ui/core/Typography";
-import TablePagination from "@material-ui/core/TablePagination";
 
-import { Actions, Notifications, Manager } from "@twilio/flex-ui";
-
-const TableCellHeader = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.grey[900],
-    color: theme.palette.common.white,
-    border: "1px solid white",
-    position: "sticky",
-    top: 0
-  }
-}))(TableCell);
+import { Notifications, Manager } from "@twilio/flex-ui";
 
 const styles = theme => ({
   //table
@@ -33,6 +21,14 @@ const styles = theme => ({
     width: "100%",
     margin: theme.spacing.unit * 1,
     overflowX: "auto"
+  },
+  tableCellHeader: {
+    backgroundColor: theme.palette.grey[900],
+    color: theme.palette.common.white,
+    variant: "head",
+    border: "1px solid white",
+    position: "sticky",
+    top: 0
   },
   table: {
     minWidth: 700
@@ -168,7 +164,7 @@ export class RealTimeStatsView extends React.Component {
     }
 
     return (
-      <CardContent className={classes.cardContent}>
+      <CardContent>
         <div className={classes.cardrow}>
           <div className={classes.cardrow}>
             <div className={classes.cardrow}>
@@ -223,7 +219,7 @@ export class RealTimeStatsView extends React.Component {
       rtsData.tasksByStatus.wrapping;
 
     return (
-      <CardContent className={classes.cardContent}>
+      <CardContent>
         <div className={classes.cardrow}>
           <div className={classes.cardrow}>
             <div className={classes.cardrow}>
@@ -264,7 +260,7 @@ export class RealTimeStatsView extends React.Component {
       this.rowsExpandedMap.set(queueItem.sid, true);
     }
 
-    this.setState({ queueStats: this.state.queueStats });
+    this.forceUpdate();
   };
 
   renderStatsForChannel(queueItem, index, channel) {
@@ -289,11 +285,11 @@ export class RealTimeStatsView extends React.Component {
         >
           <TableCell className={classes.tableCell}>
             {channel === "all" ? (
-              <CardContent className={classes.cardContent}>
+              <CardContent>
                 <Typography>{queueItem.friendlyName}</Typography>
               </CardContent>
             ) : (
-              <CardContent className={classes.cardContent}>
+              <CardContent>
                 <Typography variant="caption" gutterBottom align="right">
                   {" "}
                   - {channel}
@@ -312,7 +308,7 @@ export class RealTimeStatsView extends React.Component {
             )}
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={2} align="center">
-            <CardContent className={classes.cardContent}>
+            <CardContent>
               <div className={classes.cardrow}>
                 <div align="left" className={classes.cardcolumn}>
                   <Typography>IDLE :</Typography>
@@ -351,16 +347,18 @@ export class RealTimeStatsView extends React.Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCellHeader align="center">Queue Name</TableCellHeader>
-              <TableCellHeader align="center" colSpan={2}>
+              <TableCell className={classes.tableCellHeader}>
+                Queue Name
+              </TableCell>
+              <TableCell colSpan={2} className={classes.tableCellHeader}>
                 Tasks (In Queue)
-              </TableCellHeader>
-              <TableCellHeader align="center" colSpan={4}>
+              </TableCell>
+              <TableCell colSpan={4} className={classes.tableCellHeader}>
                 Tasks (Today)
-              </TableCellHeader>
-              <TableCellHeader align="center" colSpan={2}>
+              </TableCell>
+              <TableCell colSpan={2} className={classes.tableCellHeader}>
                 Agents
-              </TableCellHeader>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
