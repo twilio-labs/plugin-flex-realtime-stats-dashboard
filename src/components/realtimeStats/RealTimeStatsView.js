@@ -321,14 +321,12 @@ export class RealTimeStatsView extends React.Component {
               <div className={classes.cardrow}>
                 <div align="left" className={classes.cardcolumn}>
                   {Object.keys(activities).map(key => {
-                    console.log("key is", key);
                     return <Typography>{key.toUpperCase()} :</Typography>;
                   })}
                   <Typography>ELIGIBLE:</Typography>
                 </div>
                 <div align="right" className={classes.cardcolumn}>
                   {Object.values(activities).map(value => {
-                    console.log("value is", value);
                     return <Typography>{value}</Typography>;
                   })}
                   <Typography>
