@@ -24,3 +24,7 @@ v1.0 - initial release with flex-ui 1.8.2 (material-ui v 1.5.2)
 # notes
 
 the flex ui dependency was downgraded to compile with flex-ui 1.8, this is because later versions of flex use an upgraded version of material ui and as hosted flex is currently limited to 1.8.2 and no higher, we must use the material ui depdencies of 1.8.2.  In short, if you build this plugin with flexui higher than 1.8.2 it wont work with ealrier versions of flex-ui
+
+# TODOs
+
+handle the worker activity states dynamically, right now they are hard coded to IDLE, BUSY, OFFLINE which isnt consistent across all flex environments.
