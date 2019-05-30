@@ -1,46 +1,26 @@
-# Your custom Twilio Flex Plugin
+# plugin-flex-realtime-stats-dashboard
 
-Twilio Flex Plugins allow you to customize the apperance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).
+This plugin is intended to demonstrate how a realtime dashboard might be setup using a backend service with websocket approach.  The backend service can poll the statistics APIs and then clients can subscribe to the updates via a websocket managed by the backend.  In a large system this could scale out using a persistence layer that stores the updates with multiple nodes providing access to websockets that retrieve from this persistence layer.
 
-## Setup
+The backend system is available [here](https://github.com/jhunter-twilio/twilio-flex-sample-backend) and can rapidly be deployed to heroku using the link provided or setup locally with ngrok.
 
-Make sure you have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com) installed.
+# screenshot
 
-Afterwards install the dependencies by running `npm install`:
+![alt text](https://github.com/jhunter-twilio/plugin-flex-realtime-stats-dashboard/blob/master/screenshots/stats-view.png)
 
-```bash
-cd plugin-flex-realtime-stats-dashboard
+# use
 
-# If you use npm
-npm install
-```
+1. Create backend system by following the instructions provided [here](https://github.com/jhunter-twilio/twilio-flex-sample-backend/blob/master/README.md)
+2. Create a clone of this repository and update
+   - the line referencing the [backend](https://github.com/jhunter-twilio/plugin-flex-realtime-stats-dashboard/blob/eea37c0a838c5e0f60a20098cc67002b3b8444af/src/FlexRealtimeStatsDashboardPlugin.js#L13)
+3. run npm install
+4. create your own public/appConfig.js based on the public/appConfig.example.js and include your own account number
+5. run npm start
 
-## Development
+# change log
 
-In order to develop locally, you can use the Webpack Dev Server by running:
+v1.0 - initial release with flex-ui 1.8.2 (material-ui v 1.5.2)
 
-```bash
-npm start
-```
+# notes
 
-This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:8080`. If you want to change that you can do this by setting the `PORT` environment variable:
-
-```bash
-PORT=3000 npm start
-```
-
-When you make changes to your code, the browser window will be automatically refreshed.
-
-## Deploy
-
-Once you are happy with your plugin, you have to bundle it, in order to deply it to Twilio Flex.
-
-Run the following command to start the bundling:
-
-```bash
-npm run build
-```
-
-Afterwards, you'll find in your project a `build/` folder that contains a file with the name of your plugin project. For example `plugin-example.js`. Take this file and upload it into the Assets part of your Twilio Runtime.
-
-Note: Common packages like `React`, `ReactDOM`, `Redux` and `ReactRedux` are not bundled with the build because they are treated as external dependencies so the plugin will depend on Flex which would provide them globally.
+the flex ui dependency was downgraded to compile with flex-ui 1.8, this is because later versions of flex use an upgraded version of material ui and as hosted flex is currently limited to 1.8.2 and no higher, we must use the material ui depdencies of 1.8.2.  In short, if you build this plugin with flexui higher than 1.8.2 it wont work with ealrier versions of flex-ui
