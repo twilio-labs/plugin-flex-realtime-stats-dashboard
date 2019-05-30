@@ -130,80 +130,92 @@ export class RealTimeStatsView extends React.Component {
   renderCumulativeStatsCard(cumulativeData) {
     var { classes } = this.props;
 
-    var splitByWait = [];
+    if (cumulativeData) {
+      var splitByWait = [];
 
-    var measuredTime = new Date(null);
-    measuredTime.setSeconds(cumulativeData.avgTaskAcceptanceTime);
-    var averageAcceptTime = measuredTime.toISOString().substr(11, 8);
+      var measuredTime = new Date(null);
+      measuredTime.setSeconds(cumulativeData.avgTaskAcceptanceTime);
+      var averageAcceptTime = measuredTime.toISOString().substr(11, 8);
 
-    measuredTime = new Date(null);
-    measuredTime.setSeconds(cumulativeData.waitUntilCancel.avg);
-    var averageCancelTime = measuredTime.toISOString().substr(11, 8);
+      measuredTime = new Date(null);
+      measuredTime.setSeconds(cumulativeData.waitUntilCancel.avg);
+      var averageCancelTime = measuredTime.toISOString().substr(11, 8);
 
-    // setup a more dynamically usable splitbywaittime
-    // percentage is calls Acceptedbelow / ( CallsAccepted(below + above) + CallsAbandoned Above threshold)
-    for (const attribute in cumulativeData.splitByWaitTime) {
-      var totalAccepted =
-        cumulativeData.splitByWaitTime[attribute].above.reservations_accepted +
-        cumulativeData.splitByWaitTime[attribute].below.reservations_accepted +
-        cumulativeData.splitByWaitTime[attribute].above.tasks_canceled;
+      // setup a more dynamically usable splitbywaittime
+      // percentage is calls Acceptedbelow / ( CallsAccepted(below + above) + CallsAbandoned Above threshold)
+      for (const attribute in cumulativeData.splitByWaitTime) {
+        var totalAccepted =
+          cumulativeData.splitByWaitTime[attribute].above
+            .reservations_accepted +
+          cumulativeData.splitByWaitTime[attribute].below
+            .reservations_accepted +
+          cumulativeData.splitByWaitTime[attribute].above.tasks_canceled;
 
-      splitByWait.push({
-        threshold: attribute,
-        value: cumulativeData.splitByWaitTime[attribute],
-        acceptedPercentage:
-          totalAccepted > 0
-            ? Math.round(
-                (cumulativeData.splitByWaitTime[attribute].below
-                  .reservations_accepted /
-                  totalAccepted) *
-                  100
-              ) + "%"
-            : "-"
-      });
-    }
+        splitByWait.push({
+          threshold: attribute,
+          value: cumulativeData.splitByWaitTime[attribute],
+          acceptedPercentage:
+            totalAccepted > 0
+              ? Math.round(
+                  (cumulativeData.splitByWaitTime[attribute].below
+                    .reservations_accepted /
+                    totalAccepted) *
+                    100
+                ) + "%"
+              : "-"
+        });
+      }
 
-    return (
-      <CardContent>
-        <div className={classes.cardrow}>
+      return (
+        <CardContent>
           <div className={classes.cardrow}>
             <div className={classes.cardrow}>
-              <div align="left" className={classes.cardcolumn}>
-                <Typography>CREATED :</Typography>
-                <Typography>COMPLETED:</Typography>
-                <Typography>ABANDONED:</Typography>
-                <Typography>MOVED :</Typography>
+              <div className={classes.cardrow}>
+                <div align="left" className={classes.cardcolumn}>
+                  <Typography>CREATED :</Typography>
+                  <Typography>COMPLETED:</Typography>
+                  <Typography>ABANDONED:</Typography>
+                  <Typography>MOVED :</Typography>
+                </div>
+                <div align="right" className={classes.cardcolumn}>
+                  <Typography>{cumulativeData.tEnter}</Typography>
+                  <Typography>{cumulativeData.tCompl}</Typography>
+                  <Typography>{cumulativeData.tCanc}</Typography>
+                  <Typography>{cumulativeData.tMoved}</Typography>
+                </div>
               </div>
-              <div align="right" className={classes.cardcolumn}>
-                <Typography>{cumulativeData.tEnter}</Typography>
-                <Typography>{cumulativeData.tCompl}</Typography>
-                <Typography>{cumulativeData.tCanc}</Typography>
-                <Typography>{cumulativeData.tMoved}</Typography>
+            </div>
+            <div align="center" className={classes.cardcolumn}>
+              <Typography>AVG ACCEPT</Typography>
+              <Typography component="h1">{averageAcceptTime}</Typography>
+              <Typography>AVG ABANDON</Typography>
+              <Typography component="h1">{averageCancelTime}</Typography>
+            </div>
+            <div align="center" className={classes.cardcolumn}>
+              <Typography>SLA</Typography>
+              <div align="center" className={classes.cardrow}>
+                {splitByWait.map((item, index) => {
+                  return <Typography>{item.threshold} sec </Typography>;
+                })}
+              </div>
+              <div align="center" className={classes.cardrow}>
+                {splitByWait.map((item, index) => {
+                  return <Typography>{item.acceptedPercentage}</Typography>;
+                })}
               </div>
             </div>
           </div>
-          <div align="center" className={classes.cardcolumn}>
-            <Typography>AVG ACCEPT</Typography>
-            <Typography component="h1">{averageAcceptTime}</Typography>
-            <Typography>AVG ABANDON</Typography>
-            <Typography component="h1">{averageCancelTime}</Typography>
+        </CardContent>
+      );
+    } else {
+      return (
+        <CardContent>
+          <div align="center">
+            <Typography> NO DATA </Typography>
           </div>
-          <div align="center" className={classes.cardcolumn}>
-            <Typography>SLA</Typography>
-            <div align="center" className={classes.cardrow}>
-              {splitByWait.map((item, index) => {
-                return <Typography>{item.threshold} sec </Typography>;
-              })}
-            </div>
-            <div align="center" className={classes.cardrow}>
-              {splitByWait.map((item, index) => {
-                return <Typography>{item.acceptedPercentage}</Typography>;
-              })}
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    );
+        </CardContent>
+      );
+    }
   }
 
   renderRealtimeStatsCard(rtsData) {
@@ -249,9 +261,6 @@ export class RealTimeStatsView extends React.Component {
   }
 
   handleRowClick = function(queueItem, index) {
-    console.log("QueueItem Clicked: ", queueItem);
-    console.log("Index", index);
-
     var expanded = this.rowsExpandedMap.get(queueItem.sid);
 
     if (expanded) {
@@ -315,9 +324,6 @@ export class RealTimeStatsView extends React.Component {
                     console.log("key is", key);
                     return <Typography>{key.toUpperCase()} :</Typography>;
                   })}
-                  {/* <Typography>IDLE :</Typography>
-                  <Typography>BUSY:</Typography>
-                  <Typography>OFFLINE:</Typography> */}
                   <Typography>ELIGIBLE:</Typography>
                 </div>
                 <div align="right" className={classes.cardcolumn}>
@@ -325,9 +331,6 @@ export class RealTimeStatsView extends React.Component {
                     console.log("value is", value);
                     return <Typography>{value}</Typography>;
                   })}
-                  {/* <Typography>{activities.Idle}</Typography>
-                  <Typography>{activities.Busy}</Typography>
-                  <Typography>{activities.Offline}</Typography> */}
                   <Typography>
                     {queueItem["realTimeStats_" + channel].eligibleWorkers}
                   </Typography>
@@ -355,16 +358,28 @@ export class RealTimeStatsView extends React.Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell className={classes.tableCellHeader}>
+              <TableCell align="center" className={classes.tableCellHeader}>
                 Queue Name
               </TableCell>
-              <TableCell colSpan={2} className={classes.tableCellHeader}>
+              <TableCell
+                align="center"
+                colSpan={2}
+                className={classes.tableCellHeader}
+              >
                 Tasks (In Queue)
               </TableCell>
-              <TableCell colSpan={4} className={classes.tableCellHeader}>
+              <TableCell
+                align="center"
+                colSpan={4}
+                className={classes.tableCellHeader}
+              >
                 Tasks (Today)
               </TableCell>
-              <TableCell colSpan={2} className={classes.tableCellHeader}>
+              <TableCell
+                align="center"
+                colSpan={2}
+                className={classes.tableCellHeader}
+              >
                 Agents
               </TableCell>
             </TableRow>
