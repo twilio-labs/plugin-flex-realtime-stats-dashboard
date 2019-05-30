@@ -311,15 +311,23 @@ export class RealTimeStatsView extends React.Component {
             <CardContent>
               <div className={classes.cardrow}>
                 <div align="left" className={classes.cardcolumn}>
-                  <Typography>IDLE :</Typography>
+                  {Object.keys(activities).map(key => {
+                    console.log("key is", key);
+                    return <Typography>{key.toUpperCase()} :</Typography>;
+                  })}
+                  {/* <Typography>IDLE :</Typography>
                   <Typography>BUSY:</Typography>
-                  <Typography>OFFLINE:</Typography>
+                  <Typography>OFFLINE:</Typography> */}
                   <Typography>ELIGIBLE:</Typography>
                 </div>
                 <div align="right" className={classes.cardcolumn}>
-                  <Typography>{activities.Idle}</Typography>
+                  {Object.values(activities).map(value => {
+                    console.log("value is", value);
+                    return <Typography>{value}</Typography>;
+                  })}
+                  {/* <Typography>{activities.Idle}</Typography>
                   <Typography>{activities.Busy}</Typography>
-                  <Typography>{activities.Offline}</Typography>
+                  <Typography>{activities.Offline}</Typography> */}
                   <Typography>
                     {queueItem["realTimeStats_" + channel].eligibleWorkers}
                   </Typography>
