@@ -19,6 +19,8 @@ The backend system is available [here](https://github.com/jhunter-twilio/twilio-
 
 # change log
 
+v1.1 - updated to flexui 1.9.1, fixed bug where adding a queue caused a fatal error
+
 v1.0 - initial release with flex-ui 1.8.2 (material-ui v 1.5.2)
 
 # notes
