@@ -6,7 +6,7 @@ The backend system is available [here](https://github.com/jhunter-twilio/twilio-
 
 # screenshot
 
-![alt text](https://github.com/jhunter-twilio/plugin-flex-realtime-stats-dashboard/blob/master/screenshots/stats-view.png)
+![alt text](https://github.com/jhunter-twilio/plugin-flex-realtime-stats-dashboard/blob/master/screenshots/stats-view.gif)
 
 # use
 
