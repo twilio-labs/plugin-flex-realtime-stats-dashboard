@@ -61,12 +61,17 @@ const styles = theme => ({
   }
 });
 
-export class RealTimeStatsView extends React.Component {
+export class MainViewImpl extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   state = {
     websocketStatus: "closed",
     queueStats: [{}]
   };
   retryInterval;
+  /** @type WebSocket */
   webSocket = null;
   rowsExpandedMap = new Map();
 
@@ -203,8 +208,4 @@ export class RealTimeStatsView extends React.Component {
   }
 }
 
-RealTimeStatsView.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(RealTimeStatsView);
+export const MainView = withStyles(styles)(MainViewImpl);

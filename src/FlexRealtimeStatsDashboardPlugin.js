@@ -1,7 +1,7 @@
 import React from "react";
 import { FlexPlugin } from "flex-plugin";
 import { SideLink, Actions } from "@twilio/flex-ui";
-import RealTimeStatsView from "./components/realtimeStats/RealTimeStatsView";
+import { MainView } from "./components/MainView";
 
 import "./notifications/CustomNotifications";
 
@@ -23,7 +23,7 @@ export default class FlexRealtimeStatsDashboardPlugin extends FlexPlugin {
   init(flex, manager) {
     flex.ViewCollection.Content.add(
       <flex.View name="RealTimeStatsView" key="realTimeStatsView">
-        <RealTimeStatsView
+        <MainView
           key="realTimeStatsViewComponent"
           backendHostname={this.backendHostname}
         />
