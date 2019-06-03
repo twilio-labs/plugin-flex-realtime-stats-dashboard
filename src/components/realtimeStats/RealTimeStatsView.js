@@ -12,6 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import CardContent from "@material-ui/core/CardContent";
 
 import Typography from "@material-ui/core/Typography";
+import { RealTimeStatsCard } from '../RealTimeStatsCard/RealTimeStatsCard'
 
 import { Notifications, Manager } from "@twilio/flex-ui";
 
@@ -57,32 +58,27 @@ const styles = theme => ({
 });
 
 export class RealTimeStatsView extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      websocketStatus: "closed",
-      queueStats: [{}]
-    };
-
-    this.retryInterval;
-    this.webSocket = null;
-    this.rowsExpandedMap = new Map();
-  }
+  state = {
+    websocketStatus: "closed",
+    queueStats: [{}]
+  };
+  retryInterval;
+  webSocket = null;
+  rowsExpandedMap = new Map();
 
   componentDidMount() {
     console.log("mounting realtimeStats");
     this.initWebSocket();
 
     this.retryInterval = setInterval(
-      function() {
+      () => {
         if (
           this.webSocket &&
           this.webSocket.readyState === this.webSocket.CLOSED
         ) {
           this.initWebSocket();
         }
-      }.bind(this),
+      },
       10000
     );
   }
@@ -93,7 +89,7 @@ export class RealTimeStatsView extends React.Component {
   }
 
   initWebSocket() {
-    var { backendHostname } = this.props;
+    const { backendHostname } = this.props;
 
     this.webSocket = new WebSocket(
       "wss://" + backendHostname + "/websocket/realtimeStats",
@@ -116,7 +112,7 @@ export class RealTimeStatsView extends React.Component {
 
     this.webSocket.onmessage = function(message) {
       try {
-        var data = JSON.parse(message.data);
+        const data = JSON.parse(message.data);
         this.setState({
           queueStats: data
         });
@@ -127,104 +123,14 @@ export class RealTimeStatsView extends React.Component {
     }.bind(this);
   }
 
-  renderCumulativeStatsCard(cumulativeData) {
-    var { classes } = this.props;
-
-    if (cumulativeData) {
-      var splitByWait = [];
-
-      var measuredTime = new Date(null);
-      measuredTime.setSeconds(cumulativeData.avgTaskAcceptanceTime);
-      var averageAcceptTime = measuredTime.toISOString().substr(11, 8);
-
-      measuredTime = new Date(null);
-      measuredTime.setSeconds(cumulativeData.waitUntilCancel.avg);
-      var averageCancelTime = measuredTime.toISOString().substr(11, 8);
-
-      // setup a more dynamically usable splitbywaittime
-      // percentage is calls Acceptedbelow / ( CallsAccepted(below + above) + CallsAbandoned Above threshold)
-      for (const attribute in cumulativeData.splitByWaitTime) {
-        var totalAccepted =
-          cumulativeData.splitByWaitTime[attribute].above
-            .reservations_accepted +
-          cumulativeData.splitByWaitTime[attribute].below
-            .reservations_accepted +
-          cumulativeData.splitByWaitTime[attribute].above.tasks_canceled;
-
-        splitByWait.push({
-          threshold: attribute,
-          value: cumulativeData.splitByWaitTime[attribute],
-          acceptedPercentage:
-            totalAccepted > 0
-              ? Math.round(
-                  (cumulativeData.splitByWaitTime[attribute].below
-                    .reservations_accepted /
-                    totalAccepted) *
-                    100
-                ) + "%"
-              : "-"
-        });
-      }
-
-      return (
-        <CardContent>
-          <div className={classes.cardrow}>
-            <div className={classes.cardrow}>
-              <div className={classes.cardrow}>
-                <div align="left" className={classes.cardcolumn}>
-                  <Typography>CREATED :</Typography>
-                  <Typography>COMPLETED:</Typography>
-                  <Typography>ABANDONED:</Typography>
-                  <Typography>MOVED :</Typography>
-                </div>
-                <div align="right" className={classes.cardcolumn}>
-                  <Typography>{cumulativeData.tEnter}</Typography>
-                  <Typography>{cumulativeData.tCompl}</Typography>
-                  <Typography>{cumulativeData.tCanc}</Typography>
-                  <Typography>{cumulativeData.tMoved}</Typography>
-                </div>
-              </div>
-            </div>
-            <div align="center" className={classes.cardcolumn}>
-              <Typography>AVG ACCEPT</Typography>
-              <Typography component="h1">{averageAcceptTime}</Typography>
-              <Typography>AVG ABANDON</Typography>
-              <Typography component="h1">{averageCancelTime}</Typography>
-            </div>
-            <div align="center" className={classes.cardcolumn}>
-              <Typography>SLA</Typography>
-              <div align="center" className={classes.cardrow}>
-                {splitByWait.map((item, index) => {
-                  return <Typography>{item.threshold} sec </Typography>;
-                })}
-              </div>
-              <div align="center" className={classes.cardrow}>
-                {splitByWait.map((item, index) => {
-                  return <Typography>{item.acceptedPercentage}</Typography>;
-                })}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      );
-    } else {
-      return (
-        <CardContent>
-          <div align="center">
-            <Typography> NO DATA </Typography>
-          </div>
-        </CardContent>
-      );
-    }
-  }
 
   renderRealtimeStatsCard(rtsData) {
-    var { classes } = this.props;
+    const { classes } = this.props;
 
     // total tasks needs to be calculated because the total tasks returned
     // from the API includes tasks the have been cancelled / abanonded and
     // sit around for 5 minutes before being cleared up
-    var totaTasks =
+    const totaTasks =
       rtsData.tasksByStatus.pending +
       rtsData.tasksByStatus.assigned +
       rtsData.tasksByStatus.reserved +
@@ -260,8 +166,8 @@ export class RealTimeStatsView extends React.Component {
     );
   }
 
-  handleRowClick = function(queueItem, index) {
-    var expanded = this.rowsExpandedMap.get(queueItem.sid);
+  handleRowClick(queueItem) {
+    const expanded = this.rowsExpandedMap.get(queueItem.sid);
 
     if (expanded) {
       this.rowsExpandedMap.set(queueItem.sid, false);
@@ -273,10 +179,10 @@ export class RealTimeStatsView extends React.Component {
   };
 
   renderStatsForChannel(queueItem, index, channel) {
-    var activities = {};
-    var { classes } = this.props;
+    const activities = {};
+    const { classes } = this.props;
 
-    var clickCallback = () => this.handleRowClick(queueItem, index);
+    const clickCallback = () => this.handleRowClick(queueItem, index);
 
     if (queueItem.sid) {
       queueItem["realTimeStats_" + channel].activityStatistics.forEach(
@@ -284,6 +190,9 @@ export class RealTimeStatsView extends React.Component {
           activities[activity.friendly_name] = activity.workers;
         }
       );
+
+      const cumulativeStats = queueItem["cumulativeStats_" + channel];
+
       return (
         <TableRow
           className={
@@ -312,9 +221,20 @@ export class RealTimeStatsView extends React.Component {
             )}
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={4}>
-            {this.renderCumulativeStatsCard(
-              queueItem["cumulativeStats_" + channel]
-            )}
+            { !!cumulativeStats
+              ? (
+                <RealTimeStatsCard
+                  {...cumulativeStats}
+                  classes={this.props.classes}
+                />
+              )
+              : (
+                <CardContent>
+                  <div align="center">
+                    <Typography> NO DATA </Typography>
+                  </div>
+                </CardContent>
+              )}
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={2} align="center">
             <CardContent>
@@ -350,7 +270,7 @@ export class RealTimeStatsView extends React.Component {
   }
 
   render() {
-    var { classes } = this.props;
+    const { classes } = this.props;
     return (
       <Paper className={classes.tableroot}>
         <Table className={classes.table}>
@@ -384,7 +304,7 @@ export class RealTimeStatsView extends React.Component {
           </TableHead>
           <TableBody>
             {this.state.queueStats.map((queueItem, index) => {
-              var tableArray = [];
+              const tableArray = [];
               tableArray.push(
                 this.renderStatsForChannel(queueItem, index, "all")
               );
