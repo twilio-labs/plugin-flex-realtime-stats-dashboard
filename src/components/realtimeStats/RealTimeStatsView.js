@@ -9,12 +9,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-import CardContent from "@material-ui/core/CardContent";
-
-import Typography from "@material-ui/core/Typography";
-import { RealTimeStatsCard } from '../RealTimeStatsCard/RealTimeStatsCard'
-
 import { Notifications, Manager } from "@twilio/flex-ui";
+import { ChannelRow } from '../ChannelRow'
 
 const styles = theme => ({
   //table
@@ -123,50 +119,7 @@ export class RealTimeStatsView extends React.Component {
     }.bind(this);
   }
 
-
-  renderRealtimeStatsCard(rtsData) {
-    const { classes } = this.props;
-
-    // total tasks needs to be calculated because the total tasks returned
-    // from the API includes tasks the have been cancelled / abanonded and
-    // sit around for 5 minutes before being cleared up
-    const totaTasks =
-      rtsData.tasksByStatus.pending +
-      rtsData.tasksByStatus.assigned +
-      rtsData.tasksByStatus.reserved +
-      rtsData.tasksByStatus.wrapping;
-
-    return (
-      <CardContent>
-        <div className={classes.cardrow}>
-          <div className={classes.cardrow}>
-            <div className={classes.cardrow}>
-              <div align="left" className={classes.cardcolumn}>
-                <Typography>PENDING :</Typography>
-                <Typography>ASSIGNED:</Typography>
-                <Typography>RESERVED:</Typography>
-                <Typography>WRAPPING:</Typography>
-              </div>
-              <div align="right" className={classes.cardcolumn}>
-                <Typography>{rtsData.tasksByStatus.pending}</Typography>
-                <Typography>{rtsData.tasksByStatus.assigned}</Typography>
-                <Typography>{rtsData.tasksByStatus.reserved}</Typography>
-                <Typography>{rtsData.tasksByStatus.wrapping}</Typography>
-              </div>
-            </div>
-          </div>
-          <div align="center" className={classes.cardcolumn}>
-            <Typography>TOTAL</Typography>
-            <Typography component="h1">{totaTasks}</Typography>
-            <Typography>OLDEST</Typography>
-            <Typography component="h1">{rtsData.oldestTask}</Typography>
-          </div>
-        </div>
-      </CardContent>
-    );
-  }
-
-  handleRowClick(queueItem) {
+  handleRowClick = (queueItem) => {
     const expanded = this.rowsExpandedMap.get(queueItem.sid);
 
     if (expanded) {
@@ -177,97 +130,6 @@ export class RealTimeStatsView extends React.Component {
 
     this.forceUpdate();
   };
-
-  renderStatsForChannel(queueItem, index, channel) {
-    const activities = {};
-    const { classes } = this.props;
-
-    const clickCallback = () => this.handleRowClick(queueItem, index);
-
-    if (queueItem.sid) {
-      queueItem["realTimeStats_" + channel].activityStatistics.forEach(
-        activity => {
-          activities[activity.friendly_name] = activity.workers;
-        }
-      );
-
-      const cumulativeStats = queueItem["cumulativeStats_" + channel];
-
-      return (
-        <TableRow
-          className={
-            channel === "all" ? classes.tableRow : classes.tableRowChannel
-          }
-          key={index}
-          onClick={clickCallback}
-        >
-          <TableCell className={classes.tableCell}>
-            {channel === "all" ? (
-              <CardContent>
-                <Typography>{queueItem.friendlyName}</Typography>
-              </CardContent>
-            ) : (
-              <CardContent>
-                <Typography variant="caption" gutterBottom align="right">
-                  {" "}
-                  - {channel}
-                </Typography>
-              </CardContent>
-            )}
-          </TableCell>
-          <TableCell className={classes.tableCell} colSpan={2}>
-            {this.renderRealtimeStatsCard(
-              queueItem["realTimeStats_" + channel]
-            )}
-          </TableCell>
-          <TableCell className={classes.tableCell} colSpan={4}>
-            { !!cumulativeStats
-              ? (
-                <RealTimeStatsCard
-                  {...cumulativeStats}
-                  classes={this.props.classes}
-                />
-              )
-              : (
-                <CardContent>
-                  <div align="center">
-                    <Typography> NO DATA </Typography>
-                  </div>
-                </CardContent>
-              )}
-          </TableCell>
-          <TableCell className={classes.tableCell} colSpan={2} align="center">
-            <CardContent>
-              <div className={classes.cardrow}>
-                <div align="left" className={classes.cardcolumn}>
-                  {Object.keys(activities).map(key => {
-                    return <Typography>{key.toUpperCase()} :</Typography>;
-                  })}
-                  <Typography>ELIGIBLE:</Typography>
-                </div>
-                <div align="right" className={classes.cardcolumn}>
-                  {Object.values(activities).map(value => {
-                    return <Typography>{value}</Typography>;
-                  })}
-                  <Typography>
-                    {queueItem["realTimeStats_" + channel].eligibleWorkers}
-                  </Typography>
-                </div>
-              </div>
-            </CardContent>
-          </TableCell>
-        </TableRow>
-      );
-    } else {
-      return (
-        <TableRow>
-          <TableCell align="center" colSpan={9}>
-            <Typography> Loading .... </Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-  }
 
   render() {
     const { classes } = this.props;
@@ -303,28 +165,33 @@ export class RealTimeStatsView extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.state.queueStats.map((queueItem, index) => {
-              const tableArray = [];
-              tableArray.push(
-                this.renderStatsForChannel(queueItem, index, "all")
-              );
-              if (this.rowsExpandedMap.get(queueItem.sid)) {
-                tableArray.push(
-                  this.renderStatsForChannel(queueItem, index, "voice")
-                );
-                tableArray.push(
-                  this.renderStatsForChannel(queueItem, index, "chat")
-                );
-                tableArray.push(
-                  this.renderStatsForChannel(queueItem, index, "video")
-                );
-              }
-              return tableArray;
-            })}
+            {this.renderChannelRows()}
           </TableBody>
         </Table>
       </Paper>
     );
+  }
+
+  renderChannelRows() {
+    const { classes } = this.props;
+    return this.state.queueStats.map((queueItem) => {
+      const sharedProps = {
+        queueItem,
+        classes,
+        handleClick: this.handleRowClick,
+      }
+      const tableArray = [
+        <ChannelRow channel="all" {...sharedProps} />
+      ];
+      if (this.rowsExpandedMap.get(queueItem.sid)) {
+        tableArray.push(
+          <ChannelRow channel="voice" {...sharedProps} />,
+          <ChannelRow channel="chat" {...sharedProps} />,
+          <ChannelRow channel="video" {...sharedProps} />
+        );
+      }
+      return tableArray;
+    });
   }
 }
 
