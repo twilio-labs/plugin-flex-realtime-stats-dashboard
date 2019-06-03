@@ -29,7 +29,7 @@ export class RealTimeStatsCard extends React.PureComponent {
 
   render() {
     const {
-      // classes,
+      classes,
       splitByWaitTime,
       avgTaskAcceptanceTime,
       waitUntilCancel,
@@ -38,7 +38,7 @@ export class RealTimeStatsCard extends React.PureComponent {
       tCanc,
       tMoved,
     } = this.props
-    const classes = {}
+
     let measuredTime = new Date(null)
     measuredTime.setSeconds(avgTaskAcceptanceTime)
     const averageAcceptTime = measuredTime.toISOString().substr(11, 8)
@@ -49,20 +49,17 @@ export class RealTimeStatsCard extends React.PureComponent {
 
     // setup a more dynamically usable splitbywaittime
     // percentage is calls Acceptedbelow / ( CallsAccepted(below + above) + CallsAbandoned Above threshold)
-    const splitByWait = Object.keys(splitByWaitTime).map((interval) => {
-      const attribute = splitByWaitTime[interval]
-      const totalAccepted = attribute.above
-          .reservations_accepted +
-        attribute.below
-          .reservations_accepted +
-        attribute.above.tasks_canceled
+    const splitByWait = Object.keys(splitByWaitTime).map((threshold) => {
+      const value = splitByWaitTime[threshold];
+      const { above, below } = value;
+      const totalAccepted = above.reservations_accepted + below.reservations_accepted + above.tasks_canceled
 
       return {
-        threshold: interval,
-        value: attribute,
+        threshold,
+        value,
         acceptedPercentage:
           totalAccepted > 0
-            ? `${Math.round(attribute.below.reservations_accepted / totalAccepted) * 100}%`
+            ? `${Math.round(value.below.reservations_accepted / totalAccepted) * 100}%`
             : "-",
       }
     })
