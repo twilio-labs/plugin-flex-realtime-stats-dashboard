@@ -20,25 +20,33 @@ const styles = theme => ({
     overflowX: "auto"
   },
   tableCellHeader: {
-    backgroundColor: theme.palette.grey[900],
-    color: theme.palette.common.white,
+    backgroundColor: theme.colors.base9,
+    color: theme.colors.base1,
     variant: "head",
     border: "1px solid white",
     position: "sticky",
-    top: 0
+    top: 0,
+    paddingTop: "12px",
+    paddingBottom: "12px"
   },
   table: {
     minWidth: 700
   },
   tableCell: {
-    border: "1px solid " + theme.palette.grey[300]
+    border: "1px solid " + theme.colors.base2
   },
   tableRow: {
-    minHeight: "124px"
+    minHeight: "124px",
+    cursor: "pointer",
+    transition: "background-color 0.1s",
+    '&:hover': {
+      backgroundColor: theme.colors.base2
+    }
   },
   tableRowChannel: {
     minHeight: "100px",
-    backgroundColor: theme.palette.grey[200]
+    cursor: "default",
+    backgroundColor: theme.colors.base3
   },
   //rts
   cardrow: {

@@ -3,10 +3,10 @@ import PropTypes from "prop-types"
 
 import CardContent from "@material-ui/core/CardContent"
 import Typography from "@material-ui/core/Typography"
-import { RealTimeStatsCard } from '../RealTimeStatsCard'
-import { CumulativeStatsCard } from '../CumulativeStatsCard'
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import { RealTimeStatsCard } from '../RealTimeStatsCard'
+import { CumulativeStatsCard } from '../CumulativeStatsCard'
 
 export class ChannelRow extends React.PureComponent {
   static propTypes = {
