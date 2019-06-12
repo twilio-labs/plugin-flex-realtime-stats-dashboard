@@ -1,7 +1,7 @@
 import React from "react";
 import { FlexPlugin } from "flex-plugin";
 import { SideLink, Actions } from "@twilio/flex-ui";
-import { MainView } from "./components/MainView";
+import { MainView } from "./components/RealTimeStats/MainView";
 
 import "./notifications/CustomNotifications";
 

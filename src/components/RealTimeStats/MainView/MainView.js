@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 import { Notifications, Manager } from "@twilio/flex-ui";
-import { ChannelRow } from '../ChannelRow'
+import { QueueRow } from "../QueueRow";
 
 const styles = theme => ({
   //table
@@ -30,23 +30,23 @@ const styles = theme => ({
     paddingBottom: "12px"
   },
   table: {
-    minWidth: 700
+    minWidth: 1050
   },
   tableCell: {
-    border: "1px solid " + theme.colors.base2
+    border: "1px solid " + theme.colors.base6
   },
   tableRow: {
     minHeight: "124px",
     cursor: "pointer",
     transition: "background-color 0.1s",
-    '&:hover': {
-      backgroundColor: theme.colors.base2
+    "&:hover": {
+      backgroundColor: theme.colors.base3
     }
   },
   tableRowChannel: {
     minHeight: "100px",
     cursor: "default",
-    backgroundColor: theme.colors.base3
+    backgroundColor: theme.colors.base2
   },
   //rts
   cardrow: {
@@ -79,17 +79,14 @@ export class MainViewImpl extends React.Component {
     console.log("mounting realtimeStats");
     this.initWebSocket();
 
-    this.retryInterval = setInterval(
-      () => {
-        if (
-          this.webSocket &&
-          this.webSocket.readyState === this.webSocket.CLOSED
-        ) {
-          this.initWebSocket();
-        }
-      },
-      10000
-    );
+    this.retryInterval = setInterval(() => {
+      if (
+        this.webSocket &&
+        this.webSocket.readyState === this.webSocket.CLOSED
+      ) {
+        this.initWebSocket();
+      }
+    }, 10000);
   }
 
   componentWillUnmount() {
@@ -132,7 +129,7 @@ export class MainViewImpl extends React.Component {
     }.bind(this);
   }
 
-  handleRowClick = (queueItem) => {
+  handleRowClick = queueItem => {
     const expanded = this.rowsExpandedMap.get(queueItem.sid);
 
     if (expanded) {
@@ -177,9 +174,7 @@ export class MainViewImpl extends React.Component {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {this.renderChannelRows()}
-          </TableBody>
+          <TableBody>{this.renderChannelRows()}</TableBody>
         </Table>
       </Paper>
     );
@@ -187,20 +182,18 @@ export class MainViewImpl extends React.Component {
 
   renderChannelRows() {
     const { classes } = this.props;
-    return this.state.queueStats.map((queueItem) => {
+    return this.state.queueStats.map(queueItem => {
       const sharedProps = {
         queueItem,
         classes,
-        handleClick: this.handleRowClick,
-      }
-      const tableArray = [
-        <ChannelRow channel="all" {...sharedProps} />
-      ];
+        handleClick: this.handleRowClick
+      };
+      const tableArray = [<QueueRow channel="all" {...sharedProps} />];
       if (this.rowsExpandedMap.get(queueItem.sid)) {
         tableArray.push(
-          <ChannelRow channel="voice" {...sharedProps} />,
-          <ChannelRow channel="chat" {...sharedProps} />,
-          <ChannelRow channel="video" {...sharedProps} />
+          <QueueRow channel="voice" {...sharedProps} />,
+          <QueueRow channel="chat" {...sharedProps} />,
+          <QueueRow channel="video" {...sharedProps} />
         );
       }
       return tableArray;

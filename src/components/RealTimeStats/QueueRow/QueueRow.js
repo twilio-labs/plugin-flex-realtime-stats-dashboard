@@ -1,21 +1,21 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import PropTypes from "prop-types";
 
-import CardContent from "@material-ui/core/CardContent"
-import Typography from "@material-ui/core/Typography"
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import { RealTimeStatsCard } from '../RealTimeStatsCard'
-import { CumulativeStatsCard } from '../CumulativeStatsCard'
+import { RealTimeStatsCard } from "../RealTimeStatsCard";
+import { CumulativeStatsCard } from "../CumulativeStatsCard";
 
-export class ChannelRow extends React.PureComponent {
+export class QueueRow extends React.PureComponent {
   static propTypes = {
     queueItem: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     channel: PropTypes.string.isRequired,
     handleClick: PropTypes.func.isRequired,
-    index: PropTypes.number.isRequired,
-  }
+    index: PropTypes.number.isRequired
+  };
   render() {
     const { classes, queueItem, channel, index, handleClick } = this.props;
 
@@ -24,10 +24,13 @@ export class ChannelRow extends React.PureComponent {
     if (queueItem.sid) {
       const realTimeStats = queueItem["realTimeStats_" + channel];
       const cumulativeStats = queueItem["cumulativeStats_" + channel];
-      const activities = realTimeStats.activityStatistics.reduce((acc, activity) => {
-        acc[activity.friendly_name] = activity.workers;
-        return acc;
-      }, {})
+      const activities = realTimeStats.activityStatistics.reduce(
+        (acc, activity) => {
+          acc[activity.friendly_name] = activity.workers;
+          return acc;
+        },
+        {}
+      );
 
       return (
         <TableRow
@@ -51,26 +54,18 @@ export class ChannelRow extends React.PureComponent {
             )}
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={2}>
-            <RealTimeStatsCard
-              classes={classes}
-              {...realTimeStats}
-            />
+            <RealTimeStatsCard classes={classes} {...realTimeStats} />
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={4}>
-            { cumulativeStats
-              ? (
-                <CumulativeStatsCard
-                  classes={classes}
-                  {...cumulativeStats}
-                />
-              )
-              : (
-                <CardContent>
-                  <div align="center">
-                    <Typography> NO DATA </Typography>
-                  </div>
-                </CardContent>
-              )}
+            {cumulativeStats ? (
+              <CumulativeStatsCard classes={classes} {...cumulativeStats} />
+            ) : (
+              <CardContent>
+                <div align="center">
+                  <Typography> NO DATA </Typography>
+                </div>
+              </CardContent>
+            )}
           </TableCell>
           <TableCell className={classes.tableCell} colSpan={2} align="center">
             <CardContent>
