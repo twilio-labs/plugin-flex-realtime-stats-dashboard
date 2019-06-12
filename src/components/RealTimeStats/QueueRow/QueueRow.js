@@ -42,11 +42,18 @@ export class QueueRow extends React.PureComponent {
           <TableCell className={classes.tableCell}>
             {channel === "all" ? (
               <CardContent>
-                <Typography>{queueItem.friendlyName}</Typography>
+                <Typography color="inherit">
+                  {queueItem.friendlyName}
+                </Typography>
               </CardContent>
             ) : (
               <CardContent>
-                <Typography variant="caption" gutterBottom align="right">
+                <Typography
+                  color="inherit"
+                  variant="caption"
+                  gutterBottom
+                  align="right"
+                >
                   {" "}
                   - {channel}
                 </Typography>
@@ -62,7 +69,7 @@ export class QueueRow extends React.PureComponent {
             ) : (
               <CardContent>
                 <div align="center">
-                  <Typography> NO DATA </Typography>
+                  <Typography color="inherit"> NO DATA </Typography>
                 </div>
               </CardContent>
             )}
@@ -72,15 +79,17 @@ export class QueueRow extends React.PureComponent {
               <div className={classes.cardrow}>
                 <div align="left" className={classes.cardcolumn}>
                   {Object.keys(activities).map(key => (
-                    <Typography>{key.toUpperCase()} :</Typography>
+                    <Typography color="inherit">
+                      {key.toUpperCase()} :
+                    </Typography>
                   ))}
-                  <Typography>ELIGIBLE:</Typography>
+                  <Typography color="inherit">ELIGIBLE:</Typography>
                 </div>
                 <div align="right" className={classes.cardcolumn}>
                   {Object.values(activities).map(value => (
-                    <Typography>{value}</Typography>
+                    <Typography color="inherit">{value}</Typography>
                   ))}
-                  <Typography>
+                  <Typography color="inherit">
                     {queueItem["realTimeStats_" + channel].eligibleWorkers}
                   </Typography>
                 </div>
@@ -93,7 +102,7 @@ export class QueueRow extends React.PureComponent {
       return (
         <TableRow>
           <TableCell align="center" colSpan={9}>
-            <Typography> Loading .... </Typography>
+            <Typography color="inherit"> Loading .... </Typography>
           </TableCell>
         </TableRow>
       );

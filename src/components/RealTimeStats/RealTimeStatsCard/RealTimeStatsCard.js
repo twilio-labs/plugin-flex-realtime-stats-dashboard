@@ -1,8 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import PropTypes from "prop-types";
 
-import CardContent from "@material-ui/core/CardContent"
-import Typography from "@material-ui/core/Typography"
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 
 export class RealTimeStatsCard extends React.PureComponent {
   static propTypes = {
@@ -10,11 +10,11 @@ export class RealTimeStatsCard extends React.PureComponent {
       pending: PropTypes.number.isRequired,
       assigned: PropTypes.number.isRequired,
       reserved: PropTypes.number.isRequired,
-      wrapping: PropTypes.number.isRequired,
+      wrapping: PropTypes.number.isRequired
     }).isRequired,
     oldestTask: PropTypes.number.isRequired,
-    classes: PropTypes.object.isRequired,
-  }
+    classes: PropTypes.object.isRequired
+  };
 
   render() {
     const { classes, tasksByStatus, oldestTask } = this.props;
@@ -34,24 +34,34 @@ export class RealTimeStatsCard extends React.PureComponent {
           <div className={classes.cardrow}>
             <div className={classes.cardrow}>
               <div align="left" className={classes.cardcolumn}>
-                <Typography>PENDING :</Typography>
-                <Typography>ASSIGNED:</Typography>
-                <Typography>RESERVED:</Typography>
-                <Typography>WRAPPING:</Typography>
+                <Typography color="inherit">PENDING :</Typography>
+                <Typography color="inherit">ASSIGNED:</Typography>
+                <Typography color="inherit">RESERVED:</Typography>
+                <Typography color="inherit">WRAPPING:</Typography>
               </div>
               <div align="right" className={classes.cardcolumn}>
-                <Typography>{tasksByStatus.pending}</Typography>
-                <Typography>{tasksByStatus.assigned}</Typography>
-                <Typography>{tasksByStatus.reserved}</Typography>
-                <Typography>{tasksByStatus.wrapping}</Typography>
+                <Typography color="inherit">{tasksByStatus.pending}</Typography>
+                <Typography color="inherit">
+                  {tasksByStatus.assigned}
+                </Typography>
+                <Typography color="inherit">
+                  {tasksByStatus.reserved}
+                </Typography>
+                <Typography color="inherit">
+                  {tasksByStatus.wrapping}
+                </Typography>
               </div>
             </div>
           </div>
           <div align="center" className={classes.cardcolumn}>
-            <Typography>TOTAL</Typography>
-            <Typography component="h1">{totalTasks}</Typography>
-            <Typography>OLDEST</Typography>
-            <Typography component="h1">{oldestTask}</Typography>
+            <Typography color="inherit">TOTAL</Typography>
+            <Typography color="inherit" component="h1">
+              {totalTasks}
+            </Typography>
+            <Typography color="inherit">OLDEST</Typography>
+            <Typography color="inherit" component="h1">
+              {oldestTask}
+            </Typography>
           </div>
         </div>
       </CardContent>

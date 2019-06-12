@@ -23,7 +23,7 @@ const styles = theme => ({
     backgroundColor: theme.colors.base9,
     color: theme.colors.base1,
     variant: "head",
-    border: "1px solid white",
+    border: "1px solid " + theme.colors.base1,
     position: "sticky",
     top: 0,
     paddingTop: "12px",
@@ -33,20 +33,22 @@ const styles = theme => ({
     minWidth: 1050
   },
   tableCell: {
-    border: "1px solid " + theme.colors.base6
+    border: "1px solid " + theme.colors.base6,
+    color: "inherit"
   },
   tableRow: {
     minHeight: "124px",
     cursor: "pointer",
     transition: "background-color 0.1s",
     "&:hover": {
-      backgroundColor: theme.colors.base3
+      backgroundColor: theme.colors.base3,
+      color: theme.colors.base9
     }
   },
   tableRowChannel: {
     minHeight: "100px",
     cursor: "default",
-    backgroundColor: theme.colors.base2
+    backgroundColor: theme.colors.base7
   },
   //rts
   cardrow: {
