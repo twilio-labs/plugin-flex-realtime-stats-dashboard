@@ -1,6 +1,6 @@
 # plugin-flex-realtime-stats-dashboard
 
-This plugin is intended to demonstrate how a realtime dashboard might be setup using a backend service with websocket approach.  The backend service can poll the statistics APIs and then clients can subscribe to the updates via a websocket managed by the backend.  In a large system this could scale out using a persistence layer that stores the updates with multiple nodes providing access to websockets that retrieve from this persistence layer.
+This plugin is intended to demonstrate how a realtime dashboard might be setup using a backend service with websocket approach. The backend service can poll the statistics APIs and then clients can subscribe to the updates via a websocket managed by the backend. In a large system this could scale out using a persistence layer that stores the updates with multiple nodes providing access to websockets that retrieve from this persistence layer.
 
 The backend system is available [here](https://github.com/jhunter-twilio/twilio-flex-sample-backend) and can rapidly be deployed to heroku using the link provided or setup locally with ngrok.
 
@@ -23,7 +23,8 @@ v1.1 - updated to flexui 1.9.1, fixed bug where adding a queue caused a fatal er
 
 v1.0 - initial release with flex-ui 1.8.2 (material-ui v 1.5.2)
 
-# notes
+## Code of Conduct
 
+Please be aware that this project has a [Code of Conduct](https://github.com/twilio-labs/.github/blob/master/CODE_OF_CONDUCT.md). The tldr; is to just be excellent to each other ❤️
 
 # TODOs

@@ -1,6 +1,8 @@
 {
   "name": "plugin-flex-realtime-stats-dashboard",
-  "version": "0.0.0",
+  "description": "Example front end implementation of real time dashboard that recieves data from a websocket",
+  "version": "1.1.0",
+  "author": "Jared Hunter <jhunter@twilio.com>",
   "private": true,
   "scripts": {
     "postinstall": "flex-check-start",
