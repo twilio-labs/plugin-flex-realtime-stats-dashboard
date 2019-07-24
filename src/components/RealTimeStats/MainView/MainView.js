@@ -41,14 +41,18 @@ const styles = theme => ({
     cursor: "pointer",
     transition: "background-color 0.1s",
     "&:hover": {
-      backgroundColor: theme.colors.base3,
-      color: theme.colors.base9
+      backgroundColor: theme.colors.base4,
+      color: theme.colors.base10
     }
   },
   tableRowChannel: {
     minHeight: "100px",
     cursor: "default",
-    backgroundColor: theme.colors.base7
+    transition: "background-color 0.1s",
+    "&:hover": {
+      backgroundColor: theme.colors.base4,
+      color: theme.colors.base10
+    }
   },
   //rts
   cardrow: {
