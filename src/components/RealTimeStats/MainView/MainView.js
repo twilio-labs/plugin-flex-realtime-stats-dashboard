@@ -10,6 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 import { Notifications, Manager } from "@twilio/flex-ui";
+import { SyncClient } from "twilio-sync";
 import { QueueRow } from "../QueueRow";
 
 const styles = theme => ({
@@ -74,7 +75,7 @@ export class MainViewImpl extends React.Component {
 
   state = {
     websocketStatus: "closed",
-    queueStats: [{}]
+    queueStats: []
   };
   retryInterval;
   /** @type WebSocket */
@@ -82,22 +83,32 @@ export class MainViewImpl extends React.Component {
   rowsExpandedMap = new Map();
 
   componentDidMount() {
-    console.log("mounting realtimeStats");
-    this.initWebSocket();
-
-    this.retryInterval = setInterval(() => {
-      if (
-        this.webSocket &&
-        this.webSocket.readyState === this.webSocket.CLOSED
-      ) {
-        this.initWebSocket();
-      }
-    }, 10000);
+    const { useTwilioFunctions, queueStatsSyncMapName } = this.props;
+    if (useTwilioFunctions) {
+      console.log("mounting realtimeStats with twilio sync");
+      this.initSyncMapClient(queueStatsSyncMapName);
+    } else {
+      console.log("mounting realtimeStats with websocket");
+      this.initWebSocket();
+      this.retryInterval = setInterval(() => {
+        if (
+          this.webSocket &&
+          this.webSocket.readyState === this.webSocket.CLOSED
+        ) {
+          this.initWebSocket();
+        }
+      }, 10000);
+    }
   }
 
   componentWillUnmount() {
-    this.webSocket.close();
-    clearTimeout(this.retryInterval);
+    const { useTwilioFunctions } = this.props;
+    if (useTwilioFunctions) {
+      this.syncClient = null;
+    } else {
+      this.webSocket.close();
+      clearTimeout(this.retryInterval);
+    }
   }
 
   initWebSocket() {
@@ -133,6 +144,74 @@ export class MainViewImpl extends React.Component {
         console.warn("Unrecognized payload: ", message.data);
       }
     }.bind(this);
+  }
+
+  syncMapPageHandler(paginator) {
+    paginator.items.forEach(item => {
+      this.syncMapHandleItemUpdate(item);
+    });
+    return paginator.hasNextPage
+      ? paginator.nextPage().then(this.syncMapPageHandler)
+      : null;
+  }
+
+  syncMapHandleItemUpdate(mapItem) {
+    var dataMap = this.state.queueStats;
+    var updated = false;
+    console.log("DATAMAP", dataMap);
+    console.log("mapItem", mapItem);
+    dataMap.forEach((item, index) => {
+      if (item.sid === mapItem.value.sid) {
+        dataMap[index] = mapItem.value;
+        updated = true;
+      }
+    });
+    if (!updated) {
+      dataMap.push(mapItem.value);
+    }
+
+    this.setState({ queueStats: dataMap });
+  }
+
+  initSyncMapClient(queueStatsSyncMapName) {
+    // create syncClient on component mount
+    this.syncClient = new SyncClient(Manager.getInstance().user.token);
+
+    // fetch initial data map
+    this.syncClient
+      .map(queueStatsSyncMapName)
+      .then(map => {
+        map
+          .getItems()
+          .then(paginator => {
+            this.syncMapPageHandler(paginator);
+          })
+          .catch(function(error) {
+            console.error("Map getItems() failed", error);
+          });
+      })
+      .catch(function(error) {
+        Notifications.showNotification("SyncMapNotAvailable", {
+          message: queueStatsSyncMapName
+        });
+      });
+
+    // Add listener for future updates to existing items
+    this.syncClient.map(queueStatsSyncMapName).then(map => {
+      map.on("itemUpdated", args => {
+        this.syncMapHandleItemUpdate(args.item);
+      });
+    });
+
+    // Add listener for future additions to map
+    this.syncClient.map(queueStatsSyncMapName).then(map => {
+      map.on("itemAdded", args => {
+        this.syncMapHandleItemUpdate(args.item);
+      });
+    });
+
+    //TODO : add listener for removal of queue
+    // need to handle removal from the sync map in the function first
   }
 
   handleRowClick = queueItem => {

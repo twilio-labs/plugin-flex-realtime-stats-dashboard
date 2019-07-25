@@ -22,3 +22,13 @@ if (!manager.strings.backendError) {
     type: NotificationType.error
   });
 }
+
+if (!manager.strings.syncMapNotAvailable) {
+  manager.strings.syncMapNotAvailable = "Could not find sync map: {{message}}";
+
+  Notifications.registerNotification({
+    id: "SyncMapNotAvailable",
+    content: "syncMapNotAvailable",
+    type: NotificationType.error
+  });
+}

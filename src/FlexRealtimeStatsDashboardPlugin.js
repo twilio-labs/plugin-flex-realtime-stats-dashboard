@@ -6,6 +6,8 @@ import { MainView } from "./components/RealTimeStats/MainView";
 import "./notifications/CustomNotifications";
 
 const PLUGIN_NAME = "FlexRealtimeStatsDashboardPlugin";
+const USE_TWILIO_FUNCTIONS = false;
+const QUEUE_STATS_SYNC_MAP_NAME = "queueStats";
 
 export default class FlexRealtimeStatsDashboardPlugin extends FlexPlugin {
   constructor() {
@@ -26,6 +28,8 @@ export default class FlexRealtimeStatsDashboardPlugin extends FlexPlugin {
         <MainView
           key="realTimeStatsViewComponent"
           backendHostname={this.backendHostname}
+          useTwilioFunctions={USE_TWILIO_FUNCTIONS}
+          queueStatsSyncMapName={QUEUE_STATS_SYNC_MAP_NAME}
         />
       </flex.View>
     );
