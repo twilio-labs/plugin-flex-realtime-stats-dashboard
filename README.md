@@ -12,11 +12,12 @@ It also supports toggling to a twilio functions and twilio sync "backend" instea
 
 # use
 
-This plugin can be used with either
-(a) A custom backend solution written in node.js that supports a websocket with authentication - this design is suitable for production but relies on the provided backend being available
+This plugin can be used with either   
+(a) A custom backend solution written in node.js that supports a websocket with authentication - this design is suitable for production but relies on the provided backend being available  
+  
 (b) twilio functions and twilio sync - this has scalability limitations and without an external scheduler can't ensure changes to dashbaord as tasks age - this is not suitable for produciton without an external scheduler instead of task router event call back
 
-#Setting up with a custom backend
+# Setting up with a custom backend (recommended)
 
 1. Create backend system by following the instructions provided [here](https://github.com/jhunter-twilio/twilio-flex-sample-backend/blob/master/README.md)
 2. Create a clone of this repository and update
@@ -29,13 +30,13 @@ This plugin can be used with either
 
 1. create a twilio function on your flex twilio account and name it realtimestats-updateQueueStatistics. Copy the contents of [this](https://github.com/jhunter-twilio/plugin-flex-realtime-stats-dashboard/blob/master/functions/realtimestats-updateQueueStatistics.js) function into it
    - uncheck the box that says "Check for valid Twilio Signature" and save it.
-   - You should now have a function path like https://<runtime-domain>/realtimestats-updateQueueStatistics
+   - You should now have a function path like https://\<runtime-domain\>/realtimestats-updateQueueStatistics
 2. execute your function from the browser with the parameter checkMap=true
-   e.g. https://<runtime-domain>/realtimestats-updateQueueStatistics?checkMap=true
+   e.g. https://\<runtime-domain\>/realtimestats-updateQueueStatistics?checkMap=true
    - you can now optionally enable "check for valid twilio signature" again
 3. Head to twilio/console -> task router -> select your flex worksapce -> select settings
    - under "EVENT CALLBACK URL" copy the path of your twilio function e.g.
-     https://<runtime-domain>/realtimestats-updateQueueStatistics
+     https://\<runtime-domain\>/realtimestats-updateQueueStatistics
    - select all call back events
    - save
 4. create a clone of this repository and update the variable USE_TWILIO_FUNCTIONS to true, this is in FlexRealTimeStatsDashboardPlugin.js
