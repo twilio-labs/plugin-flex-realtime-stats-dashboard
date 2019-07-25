@@ -1,7 +1,7 @@
 {
   "name": "plugin-flex-realtime-stats-dashboard",
   "description": "Example front end implementation of real time dashboard that recieves data from a websocket",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "Jared Hunter <jhunter@twilio.com>",
   "private": true,
   "scripts": {

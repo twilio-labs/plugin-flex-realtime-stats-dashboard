@@ -4,6 +4,10 @@
  *  This function was written to list all queue stats for a flex workspace
  *  and push them to a sync map
  *
+ *  on first run execute function with parameter checkMap=true e.g.
+ *
+ *  https://<runtime-domain>/realtimestats-updateQueueStatistics?checkMap=true
+ *
  *  DEPENDENCIES: After creating function ensure environment variable is added
  *     TWILIO_FLEX_WORKSPACE_SID assign the value of your flex workspace
  *     TWILIO_FLEX_SYNC_SID assign the value of the sync service to map stats
