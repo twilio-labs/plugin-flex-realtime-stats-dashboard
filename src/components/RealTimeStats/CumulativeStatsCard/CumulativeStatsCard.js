@@ -64,8 +64,9 @@ export class CumulativeStatsCard extends React.PureComponent {
         value,
         acceptedPercentage:
           totalAccepted > 0
-            ? `${Math.round(value.below.reservations_accepted / totalAccepted) *
-                100}%`
+            ? `${Math.round(
+                (value.below.reservations_accepted / totalAccepted) * 100
+              )}%`
             : "-"
       };
     });
