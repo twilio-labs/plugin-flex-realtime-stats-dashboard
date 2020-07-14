@@ -23,7 +23,7 @@
     "react": "16.5.2",
     "react-dom": "16.5.2",
     "react-scripts": "1.1.5",
-    "react-table": "^6.10.0"
+    "react-table": "^7.2.1"
   },
   "config-overrides-path": "node_modules/react-app-rewire-flex-plugin"
 }
